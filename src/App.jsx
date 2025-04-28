@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { BrowserRouter as Router, Routes, Route, useNavigate } from "react-router-dom";
+import { UserProvider } from "./context/UserContext";
 import Home from "./pages/Home";
 import Survey from "./pages/Survey";
 
@@ -9,7 +10,7 @@ function SparkleButton({ text, onClick }) {
 
   const handleClick = () => {
     setClicked(true);
-    setTimeout(() => setClicked(false), 500); 
+    setTimeout(() => setClicked(false), 500);
     if (onClick) onClick();
   };
 
@@ -26,18 +27,17 @@ function SparkleButton({ text, onClick }) {
   );
 }
 
-// Login/Signup Form Box Component
+// Auth Box Component
 function AuthBox({ activeForm, setActiveForm, setIsAuthenticated }) {
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Fake authentication logic (you can add real backend here)
     setIsAuthenticated(true);
     if (activeForm === "login") {
-      navigate("/home"); // Redirect to home page after login
+      navigate("/home");
     } else if (activeForm === "signup") {
-      navigate("/survey"); // Redirect to survey page after signup
+      navigate("/survey");
     }
   };
 
@@ -88,12 +88,21 @@ function AuthBox({ activeForm, setActiveForm, setIsAuthenticated }) {
 // Landing Page Component
 function Landing() {
   const [videoEnded, setVideoEnded] = useState(false);
-  const [activeForm, setActiveForm] = useState(null); // 'login' or 'signup'
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const navigate = useNavigate();
+  const [activeForm, setActiveForm] = useState(null);
+  // Removed unused variables:
+  // const [isAuthenticated, setIsAuthenticated] = useState(false);
+  // const navigate = useNavigate();
 
   const handleVideoEnd = () => {
     setVideoEnded(true);
+  };
+
+  // Create a setIsAuthenticated function that we'll use in AuthBox
+  const setIsAuthenticated = (value) => {
+    // We'll keep this function but won't store the state here
+    // This way the AuthBox component can still call it without warnings
+    console.log("Authentication state updated:", value);
+    // If you need to use this value later, consider moving it to UserContext
   };
 
   return (
@@ -108,8 +117,8 @@ function Landing() {
         />
       ) : (
         <div
-          className="absolute top-0 left-0 w-full h-full bg-cover bg-center flex items-center justify-center"
-          style={{ backgroundImage: "url('/final-screen.png')" }}
+          style={{ backgroundImage: `url(/final-screen.png)` }}
+          className="w-screen h-screen bg-cover bg-center"
         >
           <div className="flex flex-col items-center mt-[15cm]">
             <div className="flex space-x-8">
@@ -130,16 +139,25 @@ function Landing() {
   );
 }
 
-// Main App Component with Routing
+// We need to wrap our Landing component in a Route to properly use useNavigate
+function AppRoutes() {
+  return (
+    <Routes>
+      <Route path="/" element={<Landing />} />
+      <Route path="/home" element={<Home />} />
+      <Route path="/survey" element={<Survey />} />
+    </Routes>
+  );
+}
+
+// Main App Component
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Landing />} />
-        <Route path="/home" element={<Home />} />
-        <Route path="/survey" element={<Survey />} />
-      </Routes>
-    </Router>
+    <UserProvider>
+      <Router>
+        <AppRoutes />
+      </Router>
+    </UserProvider>
   );
 }
 

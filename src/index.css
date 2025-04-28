@@ -67,3 +67,53 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+/* Sparkle particle animation */
+@keyframes sparkle {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--translate-x), var(--translate-y)) scale(0);
+  }
+}
+.sparkle {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: radial-gradient(circle, white, transparent);
+  border-radius: 50%;
+  pointer-events: none;
+  animation: sparkle 0.8s forwards;
+}
+/* Utility class for centering content */
+.center-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+}
+
+/* Utility class for a gradient background */
+.gradient-bg {
+  background: linear-gradient(135deg, #ff7eb3, #ff758c, #ff6a65);
+  background-size: 400% 400%;
+  -webkit-animation: gradient-shift 6s ease infinite;
+  -moz-animation: gradient-shift 6s ease infinite;
+  animation: gradient-shift 6s ease infinite;
+}
+
+@keyframes gradient-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
